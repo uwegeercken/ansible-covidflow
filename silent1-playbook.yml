@@ -1,0 +1,107 @@
+---
+- name: ping silent1
+  hosts: server
+  remote_user: uwe
+
+  vars:
+    - development_folder: /home/uwe/development/tweakstreet
+    - git_folder: "{{ development_folder}}/git"
+    - buildah_folder: "{{ development_folder}}/buildah"
+    - buildah_folder_flows: "{{ buildah_folder}}/flows"
+    - buildah_folder_drivers: "{{ buildah_folder}}/drivers"
+    - covidflow_folder: "{{ git_folder}}/covidflow"
+    - coviddata:
+        base_folder: "{{ git_folder}}/coviddata"
+        data_folder: "{{ git_folder}}/coviddata/csse_covid_19_data"
+        files_folder: "{{ git_folder}}/coviddata/csse_covid_19_data/csse_covid_19_daily_reports"
+    - tweakstreet:
+        image_registry_group: silent1:8082
+        image_registry_user: admin
+        base_image_name: tweakstreet-base
+        base_image_version: latest
+        image_name: tweakstreet-covidflow
+        image_version: 0.1
+        image_author: uwe.geercken@web.de
+        image_user: tweakstreet
+        image_user_id: 101
+        image_group: tweakstreet
+        image_group_id: 101
+        image_folder_home: /home/tweakstreet
+        image_folder_flows: /home/tweakstreet/flows
+        image_folder_drivers: /home/tweakstreet/.tweakstreet/drivers
+    - files:
+        - covid-controlflow.cfl
+        - covid-00.dfl
+        - covid-01.dfl
+        - config-module-dev.tsm
+        - config-module-prod.tsm
+
+  tasks:
+    - name: output variables
+      debug:
+        msg: 
+          - "development base folder is: {{ development_folder }}"
+          - "covidflow git folder is: {{ covidflow_folder }}"
+          - "covid data folder is: {{ coviddata.base_folder }}"
+
+    - name: create development folder
+      file:
+        path: "{{ development_folder }}"
+        state: directory
+    
+    - name: create buildah folder
+      file:
+        path: "{{ buildah_folder }}"
+        state: directory
+            
+    - name: create buildah flows folder
+      file:
+        path: "{{ buildah_folder }}/flows"
+        state: directory
+
+    - name: get covidflow git repo
+      git:
+       repo: https://github.com/uwegeercken/covid19-dataflow-01.git
+       dest: "{{ covidflow_folder }}"
+       
+    - name: get John Hopkins Covid data git repo
+      git:
+       repo: https://github.com/CSSEGISandData/COVID-19.git
+       dest: "{{ coviddata.base_folder }}"
+    
+    - name: copy drivers for tweakstreet
+      copy:
+        src: "drivers"
+        dest: "{{ buildah_folder}}"
+        
+    - name: copy flows and modules
+      copy:
+        src: "{{ covidflow_folder }}/{{ item }}"
+        remote_src: yes
+        dest: "{{ buildah_folder_flows}}"
+      with_items: "{{ files }}"
+
+    - name: copy data folder with lookup files
+      copy:
+        src: "{{ covidflow_folder }}/data"
+        remote_src: yes
+        dest: "{{ buildah_folder}}/flows/"
+
+    - name: copy covid data files
+      copy:
+        src: "{{ coviddata.files_folder }}/"
+        remote_src: yes
+        dest: "{{ buildah_folder}}/flows/data/covid"
+
+    - name: copy UID_ISO_FIPS lookup file
+      copy:
+        src: "{{ coviddata.data_folder }}/UID_ISO_FIPS_LookUp_Table.csv"
+        remote_src: yes
+        dest: "{{ buildah_folder}}/flows/data/lookup"
+        
+    - name:  copy buildah script
+      template:
+        src: "templates/buildah_tweakstreet_flow.j2"
+        dest: "{{ buildah_folder}}/buildah.sh"
+        mode: 0755
+        
