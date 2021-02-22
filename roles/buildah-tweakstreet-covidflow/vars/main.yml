@@ -1,0 +1,28 @@
+---
+
+buildah:
+  working_container: tweakstreet-covidflow-working-container
+  base_image_name: tweakstreet-base
+  base_image_version: 1.14.3
+  image_name: tweakstreet-covidflow
+  image_version: 0.1
+  image_author: uwe.geercken@web.de
+  image_user: tweakstreet
+  image_user_id: 101
+  image_group: tweakstreet
+  image_group_id: 101
+  image_format: docker
+  application_base_folder: /home/tweakstreet
+  application_folder_home: .tweakstreet
+  application_folder_flows: /home/tweakstreet/flows
+  application_folder_data: /home/tweakstreet/flows/data
+  application_folder_coviddata: /home/tweakstreet/flows/data/covid
+  application_folder_drivers: /home/tweakstreet/.tweakstreet/drivers
+  application_files:
+    - covid-controlflow.cfl
+    - covid-00.dfl
+    - covid-01.dfl
+    - config-module-dev.tsm
+    - config-module-prod.tsm
+  application_file_main: covid-controlflow.cfl
+  application_file_module: config-module-dev.tsm

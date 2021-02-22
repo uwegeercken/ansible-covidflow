@@ -1,0 +1,23 @@
+---
+
+- name: output variables
+  debug:
+    msg:
+      - "remote base folder is: {{ remote_base_folder }}"
+      
+- name: create base folder
+  file:
+    path: "{{ remote_base_folder }}"
+    state: directory
+
+- name: create buildah folder
+  file:
+    path: "{{ remote.buildah_folder }}"
+    state: directory
+
+- name: create buildah flows folder
+  file:
+    path: "{{ remote.buildah_folder_flows }}"
+    state: directory
+
+...

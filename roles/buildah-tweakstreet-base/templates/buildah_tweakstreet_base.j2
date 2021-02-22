@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# Script to create a OCI compliant image for the Tweakstreet ETL tool using buildah.
+#
+# The script prepares a base image which then can be used as a blueprint for other images.
+# An image using this blueprint can copy all required flows, modules and data files to the /home/tweakstreet/flows folder
+# (or subfolders). Also any drivers required by the flow need to be made available.
+#
+# A user "tweakstreet" with UID=101 and GID=101, which owns the programs files and the /home/tweakstreet folder and files is created.
+# The /opt/tweakstreet/bin folder where the shell script to run flows - engine.sh - is located, is available on the path.
+#
+# Following folders are available:
+# - the Tweakstreet ETL tool root folder: /opt/tweakstreet
+# - folder for JDBC drivers: /home/tweakstreet/.tweakstreet/drivers
+# - folder for dataflows, control flows, modules, etc: /home/tweakstreet/flows
+#
+#
+#
+# last update: uwe.geercken@web.de - 2021-02-22
+#
+
+# start of build
+
+# create the working container
+container=$(buildah --name "{{ buildah.working_container}}" from "{{ buildah.base_image_name }}")
+
+# create group and user - also creates the home folder
+buildah run $container addgroup --gid "{{ buildah.image_group_id }}" "{{ buildah.image_group }}"
+buildah run $container adduser --system --home "{{ buildah.image_user_home }}" --ingroup "{{ buildah.image_group }}" --gecos "{{ buildah.image_user_name}}" --shell "{{ buildah.image_user_shell }}" --uid "{{ buildah.image_user_id }}" "{{ buildah.image_user }}"
+
+# create folders
+buildah run $container mkdir -p "{{ buildah.application_folder_installation}}"
+buildah run $container mkdir -p "{{ buildah.application_folder_flows }}"
+buildah run $container mkdir -p "{{ buildah.application_folder_drivers }}"
+
+# copy tweakstreet application files
+buildah copy $container "{{ remote.buildah_folder }}/Tweakstreet-{{ buildah.application_download_version }}-portable/" "{{ buildah.application_folder_installation }}"
+
+# change ownership
+buildah run $container chown -R "{{ buildah.image_user }}":"{{ buildah.image_group }}" "{{ buildah.application_base_folder }}"
+buildah run $container chown -R "{{ buildah.image_user }}":"{{ buildah.image_group }}" "{{ buildah.application_folder_installation }}"
+
+# config
+buildah config --env PATH="{{ buildah.application_folder_installation }}/bin:/bin:$PATH" $container
+buildah config --author="{{ buildah.image_author }}" $container
+buildah config --user="{{ buildah.image_user }}:{{ buildah.image_group }}" $container
+buildah config --workingdir= $container
+
+# commit container, create image
+buildah commit --format "{{ buildah.image_format }}" $container "{{ buildah.image_name }}:{{ buildah.application_download_version }}"
+
+# remove working container
+buildah rm $container

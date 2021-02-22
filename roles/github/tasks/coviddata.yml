@@ -1,0 +1,8 @@
+---
+
+- name: get John Hopkins Covid data git repo
+  git:
+   repo: https://github.com/CSSEGISandData/COVID-19.git
+   dest: "{{ remote.coviddata.base_folder }}"
+
+...

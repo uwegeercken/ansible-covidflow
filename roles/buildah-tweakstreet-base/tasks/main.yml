@@ -1,0 +1,46 @@
+---
+
+
+- name: create base folder
+  file:
+    path: "{{ remote_base_folder }}"
+    state: directory
+
+- name: create buildah folder
+  file:
+    path: "{{ remote.buildah_folder }}"
+    state: directory
+
+- name: check Tweakstreet application download exists
+  stat:
+    path: "{{ remote.buildah_folder }}/Tweakstreet-{{ buildah.application_download_version }}-portable.tar.gz"
+  register: fileinfo
+
+- name: download Tweakstreet application
+  get_url:
+    url: "{{ buildah.application_download_url }}/Tweakstreet-{{ buildah.application_download_version }}-portable.tar.gz"
+    dest: "{{ remote.buildah_folder }}"
+  when: not fileinfo.stat.exists
+
+- name: untar Tweakstreet application
+  unarchive:
+    src: "{{ remote.buildah_folder }}/Tweakstreet-{{ buildah.application_download_version }}-portable.tar.gz"
+    dest: "{{ remote.buildah_folder }}"
+    remote_src: yes
+  when: not fileinfo.stat.exists
+
+- name: copy buildah script
+  template:
+    src: "buildah_tweakstreet_base.j2"
+    dest: "{{ remote.buildah_folder}}/buildah.sh"
+    mode: 0755
+
+- name: remove existing base image
+  podman_image:
+    name: "{{ buildah.image_name }}:{{ buildah.application_download_version }}"
+    state: absent
+
+- name: execute buildah script
+  shell: "{{ remote.buildah_folder}}/buildah.sh"
+
+...

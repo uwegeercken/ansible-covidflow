@@ -1,0 +1,47 @@
+---
+
+- name: copy drivers for tweakstreet
+  copy:
+    src: "drivers"
+    dest: "{{ remote.buildah_folder}}"
+
+- name: copy flows and modules
+  copy:
+    src: "{{ remote.covidflow_folder }}/{{ item }}"
+    remote_src: yes
+    dest: "{{ remote.buildah_folder_flows}}"
+  with_items: "{{ buildah.application_files }}"
+
+- name: copy data folder with lookup files
+  copy:
+    src: "{{ remote.covidflow_folder_data }}"
+    remote_src: yes
+    dest: "{{ remote.buildah_folder_flows}}/"
+
+#- name: copy covid data files
+#  copy:
+#    src: "{{ remote.coviddata.files_folder }}/"
+#    remote_src: yes
+#    dest: "{{ remote.buildah_folder_coviddata}}"
+
+#- name: copy UID_ISO_FIPS lookup file
+#  copy:
+#    src: "{{ remote.coviddata.data_folder }}/UID_ISO_FIPS_LookUp_Table.csv"
+#    remote_src: yes
+#    dest: "{{ remote.buildah_folder_lookup}}"
+
+- name:  copy buildah script
+  template:
+    src: "buildah_tweakstreet_covidflow.j2"
+    dest: "{{ remote.buildah_folder}}/buildah.sh"
+    mode: 0755
+
+- name: remove existing base image
+  podman_image:
+    name: "{{ buildah.image_name }}:{{ buildah.image_version }}"
+    state: absent
+
+- name: execute buildah script
+  shell: "{{ remote.buildah_folder}}/buildah.sh"
+
+...

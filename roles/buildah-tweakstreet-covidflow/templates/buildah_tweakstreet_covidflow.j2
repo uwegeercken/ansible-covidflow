@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# start of build
+
+container=$(buildah --name "{{ buildah.working_container}}" from "{{ buildah.base_image_name }}:{{ buildah.base_image_version }}")
+
+# copy required files
+buildah copy --chown "{{ buildah.image_user }}:{{ buildah.image_group }}" $container "{{ remote.buildah_folder_flows }}" "{{ buildah.application_folder_flows }}"
+buildah copy --chown "{{ buildah.image_user }}:{{ buildah.image_group }}" $container "{{ remote.buildah_folder_drivers }}/" "{{ buildah.application_folder_drivers }}"
+
+# configversionion
+buildah config --user="{{ buildah.image_user }}:{{ buildah.image_group }}" $container
+buildah config --author "{{ buildah.image_author }}" $container
+buildah config --entrypoint "engine.sh -g {{ application_folder_flows }}/{{ buildah.application_file_module}} -p root_folder_data {{ application_folder_coviddata }} {{ application_folder_flows }}/{{ buildah.application_file_main}} " $container
+
+buildah commit --format "{{ buildah.image_format }}" $container "{{ buildah.image_name }}:{{ buildah.image_version }}"
+buildah rm $container

@@ -1,0 +1,27 @@
+---
+- name: setup tweakstreet covidflow image
+  hosts: fedserver1
+  remote_user: uwe
+
+  vars:
+    - remote_base_folder: /opt/tweakstreet-covidflow
+    - remote:
+        git_folder: "{{ remote_base_folder }}/git"
+        buildah_folder: "{{ remote_base_folder }}/buildah"
+        buildah_folder_flows: "{{ remote_base_folder }}/buildah/flows"
+        buildah_folder_data: "{{ remote_base_folder }}/buildah/flows/data"
+        buildah_folder_lookup: "{{ remote_base_folder }}/buildah/flows/data/lookup"
+        buildah_folder_coviddata: "{{ remote_base_folder }}/buildah/flows/data/covid"
+        buildah_folder_drivers: "{{ remote_base_folder }}/buildah/drivers"
+        covidflow_folder: "{{ remote_base_folder }}/git/covidflow"
+        covidflow_folder_data: "{{ remote_base_folder }}/git/covidflow/data"
+        coviddata:
+          base_folder: "{{ remote_base_folder }}/git/coviddata"
+          data_folder: "{{ remote_base_folder }}/git/coviddata/csse_covid_19_data"
+          files_folder: "{{ remote_base_folder }}/git/coviddata/csse_covid_19_data/csse_covid_19_daily_reports"
+
+  roles:
+    - check
+    - setup
+    - github
+    - buildah-tweakstreet-covidflow
