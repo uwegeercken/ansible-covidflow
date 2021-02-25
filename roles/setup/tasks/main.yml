@@ -4,7 +4,7 @@
   debug:
     msg:
       - "remote base folder is: {{ remote_base_folder }}"
-      
+
 - name: create base folder
   file:
     path: "{{ remote_base_folder }}"

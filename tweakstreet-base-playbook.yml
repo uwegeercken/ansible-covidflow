@@ -1,7 +1,7 @@
 ---
 - name: setup tweakstreet base image
-  hosts: fedserver1
-  remote_user: uwe
+  hosts: fed33-server
+  remote_user: "{{ remote_user }}"
 
   vars:
     - remote_base_folder: /opt/tweakstreet-base

@@ -1,6 +1,5 @@
 ---
 
-
 - name: create base folder
   file:
     path: "{{ remote_base_folder }}"
@@ -33,7 +32,6 @@
   template:
     src: "buildah_tweakstreet_base.j2"
     dest: "{{ remote.buildah_folder}}/buildah.sh"
-    mode: 0755
 
 - name: remove existing base image
   podman_image:

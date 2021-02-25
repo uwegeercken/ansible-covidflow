@@ -1,0 +1,9 @@
+---
+- name: prepare base system
+  hosts: fed33-server
+  remote_user: "{{ remote_user }}"
+
+  vars:
+
+  roles:
+    - base-setup

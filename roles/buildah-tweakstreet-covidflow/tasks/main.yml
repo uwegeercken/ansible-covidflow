@@ -34,7 +34,7 @@
   template:
     src: "buildah_tweakstreet_covidflow.j2"
     dest: "{{ remote.buildah_folder}}/buildah.sh"
-    mode: 0755
+    mode: 0775
 
 - name: remove existing base image
   podman_image:

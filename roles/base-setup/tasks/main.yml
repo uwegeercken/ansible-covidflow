@@ -1,0 +1,25 @@
+---
+
+- name: install podman
+  dnf:
+    name: podman
+    state: latest
+  become: true
+
+- name: install git
+  dnf:
+    name: git
+    state: latest
+  become: true
+
+- name: recursively change ownership of /opt folder
+  ansible.builtin.file:
+    path: /opt
+    state: directory
+    recurse: no
+    owner: root
+    group: uwe
+    mode: '0775'
+  become: yes
+
+...

@@ -11,7 +11,7 @@ buildah copy --chown "{{ buildah.image_user }}:{{ buildah.image_group }}" $conta
 # configversionion
 buildah config --user="{{ buildah.image_user }}:{{ buildah.image_group }}" $container
 buildah config --author "{{ buildah.image_author }}" $container
-buildah config --entrypoint "engine.sh -g {{ application_folder_flows }}/{{ buildah.application_file_module}} -p root_folder_data {{ application_folder_coviddata }} {{ application_folder_flows }}/{{ buildah.application_file_main}} " $container
+buildah config --entrypoint "engine.sh -g {{ buildah.application_folder_flows }}/{{ buildah.application_file_module}} -p root_folder_data {{ buildah.application_folder_coviddata }} {{ buildah.application_folder_flows }}/{{ buildah.application_file_main}} " $container
 
 buildah commit --format "{{ buildah.image_format }}" $container "{{ buildah.image_name }}:{{ buildah.image_version }}"
 buildah rm $container
