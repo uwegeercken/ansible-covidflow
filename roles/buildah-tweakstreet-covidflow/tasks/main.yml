@@ -18,17 +18,17 @@
     remote_src: yes
     dest: "{{ remote.buildah_folder_flows}}/"
 
-#- name: copy covid data files
-#  copy:
-#    src: "{{ remote.coviddata.files_folder }}/"
-#    remote_src: yes
-#    dest: "{{ remote.buildah_folder_coviddata}}"
+- name: copy covid data files
+  copy:
+    src: "{{ remote.coviddata.files_folder }}/"
+    remote_src: yes
+    dest: "{{ remote.buildah_folder_coviddata}}"
 
-#- name: copy UID_ISO_FIPS lookup file
-#  copy:
-#    src: "{{ remote.coviddata.data_folder }}/UID_ISO_FIPS_LookUp_Table.csv"
-#    remote_src: yes
-#    dest: "{{ remote.buildah_folder_lookup}}"
+- name: copy UID_ISO_FIPS lookup file
+  copy:
+    src: "{{ remote.coviddata.data_folder }}/UID_ISO_FIPS_LookUp_Table.csv"
+    remote_src: yes
+    dest: "{{ remote.buildah_folder_lookup}}"
 
 - name:  copy buildah script
   template:

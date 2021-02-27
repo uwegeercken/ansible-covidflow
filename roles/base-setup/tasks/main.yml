@@ -12,8 +12,8 @@
     state: latest
   become: true
 
-- name: recursively change ownership of /opt folder
-  ansible.builtin.file:
+- name: change ownership of /opt folder
+  file:
     path: /opt
     state: directory
     recurse: no

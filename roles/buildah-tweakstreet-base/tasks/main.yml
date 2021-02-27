@@ -32,6 +32,7 @@
   template:
     src: "buildah_tweakstreet_base.j2"
     dest: "{{ remote.buildah_folder}}/buildah.sh"
+    mode: 0775
 
 - name: remove existing base image
   podman_image:

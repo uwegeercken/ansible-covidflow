@@ -5,4 +5,5 @@
    repo: https://github.com/uwegeercken/covid19-dataflow-01.git
    dest: "{{ remote.covidflow_folder }}"
 
+- import_tasks: coviddata.yml
 ...

@@ -44,7 +44,7 @@ buildah run $container chown -R "{{ buildah.image_user }}":"{{ buildah.image_gro
 buildah config --env PATH="{{ buildah.application_folder_installation }}/bin:/bin:$PATH" $container
 buildah config --author="{{ buildah.image_author }}" $container
 buildah config --user="{{ buildah.image_user }}:{{ buildah.image_group }}" $container
-buildah config --workingdir= $container
+buildah config --workingdir="{{ buildah.application_folder_flows }}" $container
 
 # commit container, create image
 buildah commit --format "{{ buildah.image_format }}" $container "{{ buildah.image_name }}:{{ buildah.application_download_version }}"

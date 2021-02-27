@@ -1,7 +1,6 @@
-[server]
-silent1
-
 [vms]
 fedserver1
 silverblue33
 
+[svr-containers]
+silent1

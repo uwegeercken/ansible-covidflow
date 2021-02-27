@@ -1,6 +1,6 @@
 ---
 - name: setup tweakstreet base image
-  hosts: fed33-server
+  hosts: svr-containers
   remote_user: "{{ remote_user }}"
 
   vars:
