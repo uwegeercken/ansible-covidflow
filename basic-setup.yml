@@ -1,7 +1,6 @@
 ---
 - name: prepare base system
   hosts: svr-containers
-  remote_user: "{{ remote_user }}"
 
   roles:
     - base-setup

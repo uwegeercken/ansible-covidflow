@@ -12,6 +12,21 @@
     state: latest
   become: true
 
+- name: ensure group tweakstreet exists
+  group:
+    name: tweakstreet
+    state: present
+    gid: 101
+  become: true
+
+- name: ensure user tweakstreet exists
+  user:
+    name: tweakstreet
+    comment: Tweakstreet User
+    uid: 101
+    group: tweakstreet
+  become: true
+
 - name: change ownership of /opt folder
   file:
     path: /opt

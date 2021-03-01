@@ -1,7 +1,6 @@
 ---
 - name: setup tweakstreet covidflow image
   hosts: svr-containers
-  remote_user: "{{ remote_user }}"
 
   vars:
     - remote_base_folder: /opt/tweakstreet-covidflow
